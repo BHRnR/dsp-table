@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Firebase from 'firebase'
-import App from './App'
-import Placeholder from './Placeholder'
 
+import app from 'firebase/app';
+
+import App from './App'
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 
@@ -18,10 +18,10 @@ const config = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
-Firebase.initializeApp(config)
+console.log(config)
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root'));
+app.initializeApp(config)
+
+ReactDOM.render(<App />, document.getElementById('root'));
 
 serviceWorker.unregister();
