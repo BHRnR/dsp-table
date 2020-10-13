@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import app from 'firebase'
+import Firebase from 'firebase'
 import App from './App'
+import Placeholder from './Placeholder'
 
 import './index.css';
 import * as serviceWorker from './serviceWorker';
@@ -17,9 +18,7 @@ const config = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
-app.initializeApp(config)
-
-
+Firebase.initializeApp(config)
 
 ReactDOM.render(
   <App />,
