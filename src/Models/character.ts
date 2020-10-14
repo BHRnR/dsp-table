@@ -1,6 +1,6 @@
 import {Class} from "./class"
 
-export type Player= {
+export type Character= {
   characterName: string;
-  class: Class
+  characterClass: Class
 }

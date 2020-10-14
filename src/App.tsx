@@ -5,34 +5,51 @@ import './App.css';
 
 function App() {
 
-  const [dataToWrite, setDataToWrite] = useState("Not set yet");
-  const [readData, setReadData] = useState("Not read yet")
-
+  const [inputName, setInputName] = useState("")
+  const [inputClass, setInputClass] = useState("")
+  const [dataRead, setDataRead] = useState({})
 
   const writeData = () => {
-    app.database().ref('/').set(dataToWrite);
-    console.log('Data Saved');
+    app.database().ref('/').push({ Name: inputName, Class: inputClass });
   }
 
-  const getData = () => {
+  const readData = () => {
     let ref = app.database().ref('/');
     ref.on('value', snapshot => {
-      const state = snapshot.val();
-      setReadData(state);
+      setDataRead(snapshot.val());
     });
-    console.log('Data retrieved');
+  }
+
+  const resetData = () => {
+    app.database().ref('/').set('')
+  }
+
+  const printData = () => {
+    const keys = Object.keys(dataRead)
+    console.log(dataRead)
+    console.log(keys)
   }
 
   const writeHandler = (event: FormEvent) => {
     event.preventDefault();
-    console.log('Submitted');
-    writeData()
+    writeData();
+    setInputClass("")
+    setInputName("")
   }
 
   const readHandler = (event: FormEvent) => {
     event.preventDefault();
-    console.log('Read data');
-    getData()
+    readData();
+  }
+
+  const resetHandler = (event: FormEvent) => {
+    event.preventDefault();
+    resetData();
+  }
+
+  const printHandler = (event: FormEvent) => {
+    event.preventDefault();
+    printData();
   }
 
   return (
@@ -40,16 +57,30 @@ function App() {
       <h2>
         Save to database
       </h2>
-      <form onClick={writeHandler}>
+      <form >
         <input
           type="text"
           name="name"
-          value={dataToWrite}
-          onChange={(v) => setDataToWrite(v.target.value)}
+          value={inputName}
+          onChange={(e) => setInputName(e.target.value)}
         />
+        <select
+          onChange={(e) => setInputClass(e.target.value)}
+        >
+          <option value="Druid">Druid</option>
+          <option value="Hunter">Hunter</option>
+          <option value="Mage">Mage</option>
+          <option value="Priest">Priest</option>
+          <option value="Rogue">Rogue</option>
+          <option value="Shaman">Shaman</option>
+          <option value="Warlock">Warlock</option>
+          <option value="Warrior">Warrior</option>
+        </select>
+        <br />
         <input
           type="submit"
           value="Save"
+          onClick={writeHandler}
         />
       </form >
       <br />
@@ -57,15 +88,24 @@ function App() {
       <h2>
         Read from database
       </h2>
-      <form onClick={readHandler}>
-        <input
-          type="submit"
-          value="Read Data" />
-      </form>
-      <h2>
-        {readData}
-      </h2>
-    </div>
+      <input
+        type="submit"
+        value="Read"
+        onClick={readHandler}
+      />
+      <br />
+      <input
+        type="submit"
+        value="Reset Data"
+        onClick={resetHandler}
+      />
+      <br />
+      <input
+        type="submit"
+        value="Print Data"
+        onClick={printHandler}
+      />
+    </div >
   )
 }
 

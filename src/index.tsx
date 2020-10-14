@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import app from 'firebase/app';
-
 import App from './App'
+import app from 'firebase'
+
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+//import Clock from './Text';
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -17,8 +18,6 @@ const config = {
   appId: process.env.REACT_APP_APP_ID,
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
-
-console.log(config)
 
 app.initializeApp(config)
 

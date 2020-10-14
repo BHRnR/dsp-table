@@ -6,5 +6,6 @@ export enum Class {
   rogue = "Rogue",
   shaman = "Shaman",
   warlock = "Warlock",
-  warrior = "Warrior"
+  warrior = "Warrior",
+  null = ""
 }
