@@ -1,5 +1,5 @@
 export default {
-  ROSTER: '/roster',
+  SQUAD: '/squad',
   RAID_DAY: '/raid_day',
   ROOT: '/',
 };

@@ -1,16 +1,22 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import TextField from '@material-ui/core/TextField';
+
 import app from 'firebase/app';
 import 'firebase/database'
-import { Button, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-import { DataGrid, ColDef } from '@material-ui/data-grid';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField
+} from '@material-ui/core';
+import { DataGrid, ColDef } from '@material-ui/data-grid';
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -26,21 +32,19 @@ const config = {
 app.initializeApp(config)
 
 
-function Roster() {
+function Squad() {
   const columns: ColDef[] = [
-    { field: 'id', headerName: 'ID', width: 250 },
+    { field: 'id', headerName: 'ID', width: 50 },
     { field: 'characterName', headerName: 'Name', width: 150 },
     { field: 'characterClass', headerName: 'Class', width: 150 },
   ];
 
   const [inputName, setInputName] = useState("")
   const [inputClass, setInputClass] = useState("")
-  const [dataReadRaw, setDataReadRaw] = useState<any>({})
   const [dataExtracted, setDataExtracted] = useState<any>([])
   const [clearOpen, setClearOpen] = useState(false);
   const [keys, setKeys] = useState<any>([])
   const [idToRemove, setIdToRemove] = useState<any>([])
-  const [NameToRemove, setNameToRemove] = useState('')
 
   const writeHandler = (event: FormEvent) => {
     event.preventDefault();
@@ -51,7 +55,7 @@ function Roster() {
 
   const readHandler = (event: FormEvent) => {
     event.preventDefault();
-    readData();
+    readData()
   }
 
   const removeHandler = (event: FormEvent) => {
@@ -85,18 +89,19 @@ function Roster() {
     }
   }
 
-  const readData = () => {
-    app.database().ref('/').on('value', snapshot => {
-      setDataReadRaw(snapshot.val());
-    });
-
-    setKeys(Object.keys(dataReadRaw))
-    let data = []
-    for (let i = 0; i < keys.length; i++) {
-      data.push({ id: i, characterName: dataReadRaw[keys[i]].Name, characterClass: dataReadRaw[keys[i]].Class })
-    }
-    setDataExtracted(data)
-    console.log(data)
+  const readData = async () => {
+    await app.database().ref('/')
+      .once('value')
+      .then(snapshot => {
+        let dataRaw = snapshot.val()
+        let keys = Object.keys(dataRaw)
+        let data = []
+        for (let i = 0; i < keys.length; i++) {
+          data.push({ id: i, characterName: dataRaw[keys[i]].Name, characterClass: dataRaw[keys[i]].Class })
+        }
+        setKeys(keys)
+        setDataExtracted(data)
+      })
   }
 
   const removeData = (id: number) => {
@@ -104,8 +109,12 @@ function Roster() {
   }
 
   const resetData = () => {
-    app.database().ref('/').set('')
+    app.database().ref('/').remove()
   }
+
+  useEffect(() => {
+    readData()
+  }, [])
 
   return (
     <div style={{ textAlign: "center", marginTop: "5em" }}>
@@ -156,21 +165,13 @@ function Roster() {
       <div style={{ margin: '3em auto', maxWidth: '600px', height: 400, width: '100%' }}>
         <DataGrid rows={dataExtracted} columns={columns} pageSize={5} />
       </div>
-      {/*       <Autocomplete
-        id="combo-box-demo"
-        options={dataExtracted}
-        getOptionLabel={(option: any) => option.characterName}
-        style={{ width: 300, margin: '1em auto' }}
-        //onChange={(e) => setNameToRemove(dataExtracted.characterName)}
-        renderInput={(params) => <TextField {...params} label="Player to remove" variant="outlined" />}
-      /> */}
       <TextField
         id="outlined-basic"
         label="Player ID to remove"
         variant="outlined"
         value={idToRemove}
         onChange={(e) => setIdToRemove(e.target.value)}
-/>
+      />
       <br />
       <Button
         style={{ margin: '1em auto' }}
@@ -213,4 +214,4 @@ function Roster() {
   )
 }
 
-export default Roster;
+export default Squad;
